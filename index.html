@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <title>Simple Box Game</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <style>
+        body {
+            margin: 0;
+            overflow: hidden;
+        }
+        canvas {
+            display: block;
+            background-color: #f0f0f0;
+        }
+    </style>
+</head>
+<body>
+    <div id="CocosGameContainer">
+        <canvas id="GameCanvas"></canvas>
+    </div>
+    <script>
+        // 初始化遊戲畫布
+        const canvas = document.getElementById('GameCanvas');
+        const ctx = canvas.getContext('2d');
+        canvas.width = window.innerWidth;
+        canvas.height = window.innerHeight;
+
+        // 遊戲方塊的初始屬性
+        const box = {
+            x: canvas.width / 2 - 25,
+            y: canvas.height / 2 - 25,
+            width: 50,
+            height: 50,
+            color: 'blue',
+            speed: 5
+        };
+
+        // 監聽鍵盤輸入
+        const keys = {
+            ArrowUp: false,
+            ArrowDown: false,
+            ArrowLeft: false,
+            ArrowRight: false
+        };
+
+        window.addEventListener('keydown', (e) => {
+            if (keys.hasOwnProperty(e.key)) keys[e.key] = true;
+        });
+
+        window.addEventListener('keyup', (e) => {
+            if (keys.hasOwnProperty(e.key)) keys[e.key] = false;
+        });
+
+        // 更新遊戲邏輯
+        function update() {
+            if (keys.ArrowUp) box.y -= box.speed;
+            if (keys.ArrowDown) box.y += box.speed;
+            if (keys.ArrowLeft) box.x -= box.speed;
+            if (keys.ArrowRight) box.x += box.speed;
+
+            // 邊界檢查
+            box.x = Math.max(0, Math.min(canvas.width - box.width, box.x));
+            box.y = Math.max(0, Math.min(canvas.height - box.height, box.y));
+        }
+
+        // 繪製遊戲畫布
+        function draw() {
+            ctx.clearRect(0, 0, canvas.width, canvas.height); // 清除畫布
+            ctx.fillStyle = box.color;
+            ctx.fillRect(box.x, box.y, box.width, box.height); // 繪製方塊
+        }
+
+        // 遊戲循環
+        function gameLoop() {
+            update();
+            draw();
+            requestAnimationFrame(gameLoop); // 遞迴呼叫
+        }
+
+        // 開始遊戲
+        gameLoop();
+    </script>
+</body>
+</html>
